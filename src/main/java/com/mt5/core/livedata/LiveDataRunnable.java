@@ -57,7 +57,6 @@ public class LiveDataRunnable implements Runnable{
                 Number closePrice = candle.getNumber(4);
                 Number volume = candle.getNumber(5);
                 Candle candleObject = new Candle(openTimeZDT, openPrice,highPrice,lowPrice,closePrice,volume);
-                
                 if (this.onCandleUpdate!=null) onCandleUpdate.onCandleUpdate(candleObject);
             }
 

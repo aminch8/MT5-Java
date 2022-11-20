@@ -1,14 +1,19 @@
 package com.mt5.core.livedata;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mt5.core.domains.UpdateResponse;
 import com.mt5.core.domains.requests.UpdateConfig;
 import com.mt5.core.enums.TimeFrame;
 import com.mt5.core.interfaces.OnCandleUpdate;
 import com.mt5.core.interfaces.OnTickUpdate;
 import com.mt5.core.services.MT5Client;
+import com.mt5.core.utils.MapperUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.zeromq.ZMQ;
 
 import static org.zeromq.SocketType.PULL;
 
+@Slf4j
 public class MT5LiveData {
 
     private int livePort = 2203;
@@ -46,25 +51,33 @@ public class MT5LiveData {
     }
 
 
-    public void addToLiveDataConfig(String symbol, TimeFrame timeFrame){
+    public UpdateResponse addToLiveDataConfig(String symbol, TimeFrame timeFrame){
         UpdateConfig updateConfig = new UpdateConfig(symbol,timeFrame);
         String requestAsString = updateConfig.toRequestString();
-        System.out.println("QQQ"+mt5Client.executeRequest(requestAsString));
+        UpdateResponse updateResponse = null;
+        try {
+            updateResponse =
+                    MapperUtil.getObjectMapper().readValue(mt5Client.executeRequest(requestAsString), UpdateResponse.class);
+        } catch (JsonProcessingException e) {
+           log.error("Response of update could not be processed",e);
+        }
+        if (updateResponse.isError()) log.error("Update Liva Data Failed, Message : ",updateResponse.getDescription());
+        return updateResponse;
     }
 
     String getLiveData(){
         return pullLive.recvStr();
     }
 
-    public void startReceive(OnCandleUpdate onCandleUpdate,OnTickUpdate onTickUpdate){
+    public void startStream(OnCandleUpdate onCandleUpdate,OnTickUpdate onTickUpdate){
         new Thread(new LiveDataRunnable(onCandleUpdate,onTickUpdate,this)).start();
     }
 
-    public void startReceive(OnTickUpdate onTickUpdate){
+    public void startStream(OnTickUpdate onTickUpdate){
         new Thread(new LiveDataRunnable(onTickUpdate,this)).start();
     }
 
-    public void startReceive(OnCandleUpdate onCandleUpdate){
+    public void startStream(OnCandleUpdate onCandleUpdate){
         new Thread(new LiveDataRunnable(onCandleUpdate,this)).start();
     }
 
