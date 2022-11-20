@@ -46,7 +46,7 @@ public class MT5LiveData {
     }
 
 
-    public void updateLiveDataConfig(String symbol, TimeFrame timeFrame){
+    public void addToLiveDataConfig(String symbol, TimeFrame timeFrame){
         UpdateConfig updateConfig = new UpdateConfig(symbol,timeFrame);
         String requestAsString = updateConfig.toRequestString();
         System.out.println("QQQ"+mt5Client.executeRequest(requestAsString));

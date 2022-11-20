@@ -11,7 +11,8 @@ public class Main {
 	// write your code here
         MT5Client mt5Client = new MT5Client.MT5ClientFactory(2201,2202).setHost("localhost").build();
         MT5LiveData mt5LiveData = new MT5LiveData.MT5LiveDataFactory(2203,mt5Client).build();
-        mt5LiveData.updateLiveDataConfig("BTCUSD",TimeFrame.TICK);
+        mt5LiveData.addToLiveDataConfig("BTCUSD",TimeFrame.TICK);
+        mt5LiveData.addToLiveDataConfig("BTCUSD",TimeFrame.M1);
         mt5LiveData.startReceive((OnCandleUpdate) candle -> {
             System.out.println("asd");
         });
