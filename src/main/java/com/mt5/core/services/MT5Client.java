@@ -1,7 +1,11 @@
 package com.mt5.core.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mt5.core.domains.Positions;
 import com.mt5.core.domains.requests.GetHistory;
 import com.mt5.core.domains.History;
+import com.mt5.core.domains.requests.GetPositions;
 import com.mt5.core.enums.TimeFrame;
 import com.mt5.core.utils.MapperUtil;
 import lombok.SneakyThrows;
@@ -71,6 +75,19 @@ public class MT5Client {
             throw new RuntimeException("Response of value OK was not received. Wrong port number.");
         }
         return pullData.recvStr();
+    }
+
+    public Positions onGoingPositions(){
+        GetPositions getPositions = new GetPositions();
+        String requestAsString = getPositions.toRequestString();
+        String response = executeRequest(requestAsString);
+        Positions positions = null;
+        try {
+            positions = MapperUtil.getObjectMapper().readValue(response, Positions.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing positions, Message : " , e);
+        }
+        return positions;
     }
 
 

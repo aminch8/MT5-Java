@@ -7,7 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Action {
-    HISTORY("HISTORY"),CONFIG("CONFIG");
+    HISTORY("HISTORY"),
+    CONFIG("CONFIG"),
+    POSITIONS("POSITIONS")
+    ;
 
     private String value;
 
