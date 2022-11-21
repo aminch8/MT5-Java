@@ -4,7 +4,7 @@ import lombok.*;
 
 @Data
 @AllArgsConstructor
-public class UpdateResponse {
+public class UpdateConfigResponse {
 
     private boolean error;
     private String lastError;

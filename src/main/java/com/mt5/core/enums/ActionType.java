@@ -8,7 +8,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 public enum ActionType {
-    DATA("DATA");
+    DATA("DATA"),
+    ORDER_CANCEL("ORDER_CANCEL"),
+
+    ;
 
     private String value;
 

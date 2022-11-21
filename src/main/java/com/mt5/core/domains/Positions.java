@@ -25,22 +25,5 @@ public class Positions {
         this.serverTime = serverTime;
     }
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Data
-    private static class Position {
-        private long id;
-        private long magic;
-        private String symbol;
-        private PositionType type;
-        @JsonProperty("time_setup")
-        private long timeSetup;
-        @JsonProperty("open")
-        private Number openPrice;
-        @JsonProperty("stoploss")
-        private Number stopLoss;
-        @JsonProperty("takeprofit")
-        private Number takeProfit;
-        private Number volume;
-    }
+
 }

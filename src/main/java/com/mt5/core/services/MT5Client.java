@@ -2,8 +2,10 @@ package com.mt5.core.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mt5.core.domains.CancelOrderResponse;
 import com.mt5.core.domains.Orders;
 import com.mt5.core.domains.Positions;
+import com.mt5.core.domains.requests.CloseOrder;
 import com.mt5.core.domains.requests.GetHistory;
 import com.mt5.core.domains.History;
 import com.mt5.core.domains.requests.GetOpenOrders;
@@ -103,6 +105,20 @@ public class MT5Client {
             log.error("Error parsing positions, Message : " , e);
         }
         return orders;
+    }
+
+    public CancelOrderResponse closeOrder(long id){
+        CloseOrder closeOrder = new CloseOrder(id);
+        String requestAsString = closeOrder.toRequestString();
+        String response = executeRequest(requestAsString);
+        CancelOrderResponse cancelOrderResponse = new CancelOrderResponse();
+        try {
+            cancelOrderResponse = MapperUtil.getObjectMapper().readValue(response,CancelOrderResponse.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing positions, Message : " , e);
+        }
+        if (cancelOrderResponse.isError()) log.error("Cancel order request returned an error." + cancelOrderResponse.getDescription());
+        return cancelOrderResponse;
     }
 
 

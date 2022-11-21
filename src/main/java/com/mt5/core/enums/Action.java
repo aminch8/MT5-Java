@@ -10,7 +10,8 @@ public enum Action {
     HISTORY("HISTORY"),
     CONFIG("CONFIG"),
     POSITIONS("POSITIONS"),
-    ORDERS("ORDERS")
+    ORDERS("ORDERS"),
+    TRADE("TRADE"),
     ;
 
     private String value;
