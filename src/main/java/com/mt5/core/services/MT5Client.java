@@ -1,15 +1,11 @@
 package com.mt5.core.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mt5.core.domains.CancelOrderResponse;
+import com.mt5.core.domains.ActionTradeResponse;
 import com.mt5.core.domains.Orders;
 import com.mt5.core.domains.Positions;
-import com.mt5.core.domains.requests.CloseOrder;
-import com.mt5.core.domains.requests.GetHistory;
+import com.mt5.core.domains.requests.*;
 import com.mt5.core.domains.History;
-import com.mt5.core.domains.requests.GetOpenOrders;
-import com.mt5.core.domains.requests.GetPositions;
 import com.mt5.core.enums.TimeFrame;
 import com.mt5.core.utils.MapperUtil;
 import lombok.SneakyThrows;
@@ -81,7 +77,7 @@ public class MT5Client {
         return pullData.recvStr();
     }
 
-    public Positions getGoingPositions(){
+    public Positions getOpenPositions(){
         GetPositions getPositions = new GetPositions();
         String requestAsString = getPositions.toRequestString();
         String response = executeRequest(requestAsString);
@@ -107,18 +103,24 @@ public class MT5Client {
         return orders;
     }
 
-    public CancelOrderResponse closeOrder(long id){
+    public ActionTradeResponse closeOrder(long id){
         CloseOrder closeOrder = new CloseOrder(id);
         String requestAsString = closeOrder.toRequestString();
         String response = executeRequest(requestAsString);
-        CancelOrderResponse cancelOrderResponse = new CancelOrderResponse();
+        ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
         try {
-            cancelOrderResponse = MapperUtil.getObjectMapper().readValue(response,CancelOrderResponse.class);
+            actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
         } catch (JsonProcessingException e) {
             log.error("Error parsing positions, Message : " , e);
         }
-        if (cancelOrderResponse.isError()) log.error("Cancel order request returned an error." + cancelOrderResponse.getDescription());
-        return cancelOrderResponse;
+        if (actionTradeResponse.isError()) log.error("Cancel order request returned an error." + actionTradeResponse.getDescription());
+        return actionTradeResponse;
+    }
+    public void closePartialPosition(long id,String symbolName,Number volume){
+        ClosePartialPosition closePartialPosition = new ClosePartialPosition(id,symbolName,volume);
+        String requestAsString = closePartialPosition.toRequestString();
+        String response = executeRequest(requestAsString);
+        System.out.println(response);
     }
 
 

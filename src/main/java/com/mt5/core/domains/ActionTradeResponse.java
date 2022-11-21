@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CancelOrderResponse {
+public class ActionTradeResponse {
     private boolean error;
     private long retcode;
     @JsonProperty("desription")

@@ -1,7 +1,7 @@
 package com.mt5.core.livedata;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mt5.core.domains.UpdateConfigResponse;
+import com.mt5.core.domains.ActionConfigResponse;
 import com.mt5.core.domains.requests.UpdateConfig;
 import com.mt5.core.enums.TimeFrame;
 import com.mt5.core.interfaces.OnCandleUpdate;
@@ -51,18 +51,18 @@ public class MT5LiveData {
     }
 
 
-    public UpdateConfigResponse addToLiveDataConfig(String symbol, TimeFrame timeFrame){
+    public ActionConfigResponse addToLiveDataConfig(String symbol, TimeFrame timeFrame){
         UpdateConfig updateConfig = new UpdateConfig(symbol,timeFrame);
         String requestAsString = updateConfig.toRequestString();
-        UpdateConfigResponse updateConfigResponse = null;
+        ActionConfigResponse actionConfigResponse = null;
         try {
-            updateConfigResponse =
-                    MapperUtil.getObjectMapper().readValue(mt5Client.executeRequest(requestAsString), UpdateConfigResponse.class);
+            actionConfigResponse =
+                    MapperUtil.getObjectMapper().readValue(mt5Client.executeRequest(requestAsString), ActionConfigResponse.class);
         } catch (JsonProcessingException e) {
            log.error("Response of update could not be processed",e);
         }
-        if (updateConfigResponse.isError()) log.error("Update Liva Data Failed, Message : " + updateConfigResponse.getDescription());
-        return updateConfigResponse;
+        if (actionConfigResponse.isError()) log.error("Update Liva Data Failed, Message : " + actionConfigResponse.getDescription());
+        return actionConfigResponse;
     }
 
     String getLiveData(){

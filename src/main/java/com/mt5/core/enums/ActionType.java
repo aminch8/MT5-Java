@@ -10,6 +10,8 @@ import lombok.Setter;
 public enum ActionType {
     DATA("DATA"),
     ORDER_CANCEL("ORDER_CANCEL"),
+    POSITION_PARTIAL("POSITION_PARTIAL"),
+
 
     ;
 
