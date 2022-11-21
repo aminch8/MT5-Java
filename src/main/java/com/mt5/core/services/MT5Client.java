@@ -213,6 +213,42 @@ public class MT5Client {
         if (actionTradeResponse.isError()) log.error("Market order request returned an error." + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
+    public ActionTradeResponse limitBuy(String symbol,Number volume,Number price,Number stoploss,Number takeprofit){
+        LimitBuyOrder limitBuyOrder = new LimitBuyOrder(symbol,volume,price,stoploss,takeprofit);
+        String requestAsString = limitBuyOrder.toRequestString();
+        String response = executeRequest(requestAsString);
+        ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
+        try {
+            actionTradeResponse=MapperUtil.getObjectMapper().readValue(response,ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing positions, Message : " , e);
+        }
+        if (actionTradeResponse.isError()) log.error("Limit order request returned an error." + actionTradeResponse.getDescription());
+        return actionTradeResponse;
+    }
+
+    public ActionTradeResponse limitBuy(String symbol,Number volume,Number price){
+        return limitBuy(symbol,volume,price,null,null);
+    }
+
+
+    @SneakyThrows
+    public ActionTradeResponse limitSell(String symbol, Number volume, Number price, Number stoploss, Number takeprofit){
+        LimitSellOrder limitSellOrder = new LimitSellOrder(symbol,volume,price,stoploss,takeprofit);
+        String requestAsString = limitSellOrder.toRequestString();
+        String response = executeRequest(requestAsString);
+        ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
+        actionTradeResponse = MapperUtil.getObjectMapper().readValue(response,ActionTradeResponse.class);
+        if (actionTradeResponse.isError()){
+            log.error("Limit order request returned an error." + actionTradeResponse.getDescription());
+            throw new RuntimeException();
+        }
+        return actionTradeResponse;
+    }
+
+    public ActionTradeResponse limitSell(String symbol,Number volume,Number price){
+       return limitSell(symbol,volume,price,null,null);
+    }
 
 
 
