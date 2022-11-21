@@ -1,11 +1,8 @@
 package com.mt5.core.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mt5.core.domains.ActionTradeResponse;
-import com.mt5.core.domains.Orders;
-import com.mt5.core.domains.Positions;
+import com.mt5.core.domains.*;
 import com.mt5.core.domains.requests.*;
-import com.mt5.core.domains.History;
 import com.mt5.core.enums.TimeFrame;
 import com.mt5.core.utils.MapperUtil;
 import lombok.SneakyThrows;
@@ -142,6 +139,19 @@ public class MT5Client {
         }
         if (actionTradeResponse.isError()) log.error("Position close request returned an error." + actionTradeResponse.getDescription());
         return actionTradeResponse;
+    }
+
+    public LiveSymbols getLiveSymbols(){
+        GetLiveSymbols getLiveSymbols = new GetLiveSymbols();
+        String requestAsString = getLiveSymbols.toRequestString();
+        String response = executeRequest(requestAsString);
+        LiveSymbols liveSymbols = new LiveSymbols();
+        try {
+            liveSymbols = MapperUtil.getObjectMapper().readValue(response,LiveSymbols.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing positions, Message : " , e);
+        }
+        return liveSymbols;
     }
 
 
