@@ -1,38 +1,27 @@
 package com.mt5.core.domains;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mt5.core.enums.PositionType;
-import com.mt5.core.utils.MapperUtil;
-import lombok.*;
+import com.mt5.core.enums.OrderType;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Positions {
+public class Orders {
     private boolean error;
-    private List<Position> positions;
-    @JsonProperty("server_time")
-    private long serverTime;
-
-    public Date getServerTime() {
-        return MapperUtil.convertLongToDate(serverTime);
-    }
-
-    private void setServerTime(long serverTime) {
-        this.serverTime = serverTime;
-    }
+    private List<Order> orders;
 
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
-    private static class Position {
+    private static class Order {
         private long id;
         private long magic;
         private String symbol;
-        private PositionType type;
+        private OrderType type;
         @JsonProperty("time_setup")
         private long timeSetup;
         @JsonProperty("open")

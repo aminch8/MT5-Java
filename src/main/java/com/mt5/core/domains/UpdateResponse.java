@@ -1,7 +1,6 @@
 package com.mt5.core.domains;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @AllArgsConstructor

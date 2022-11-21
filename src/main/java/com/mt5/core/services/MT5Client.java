@@ -2,9 +2,11 @@ package com.mt5.core.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mt5.core.domains.Orders;
 import com.mt5.core.domains.Positions;
 import com.mt5.core.domains.requests.GetHistory;
 import com.mt5.core.domains.History;
+import com.mt5.core.domains.requests.GetOpenOrders;
 import com.mt5.core.domains.requests.GetPositions;
 import com.mt5.core.enums.TimeFrame;
 import com.mt5.core.utils.MapperUtil;
@@ -77,7 +79,7 @@ public class MT5Client {
         return pullData.recvStr();
     }
 
-    public Positions onGoingPositions(){
+    public Positions getGoingPositions(){
         GetPositions getPositions = new GetPositions();
         String requestAsString = getPositions.toRequestString();
         String response = executeRequest(requestAsString);
@@ -88,6 +90,19 @@ public class MT5Client {
             log.error("Error parsing positions, Message : " , e);
         }
         return positions;
+    }
+
+    public Orders getOpenOrders(){
+        GetOpenOrders getOpenOrders = new GetOpenOrders();
+        String requestAsString = getOpenOrders.toRequestString();
+        String response = executeRequest(requestAsString);
+        Orders orders = new Orders();
+        try {
+            orders = MapperUtil.getObjectMapper().readValue(response,Orders.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing positions, Message : " , e);
+        }
+        return orders;
     }
 
 

@@ -1,13 +1,12 @@
 package com.mt5.core.domains;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
-@Data
 @AllArgsConstructor
+@Data
 public class Candle {
     private ZonedDateTime openTime;
     private Number openPrice;

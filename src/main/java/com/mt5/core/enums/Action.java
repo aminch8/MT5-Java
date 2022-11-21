@@ -9,7 +9,8 @@ import lombok.Getter;
 public enum Action {
     HISTORY("HISTORY"),
     CONFIG("CONFIG"),
-    POSITIONS("POSITIONS")
+    POSITIONS("POSITIONS"),
+    ORDERS("ORDERS")
     ;
 
     private String value;

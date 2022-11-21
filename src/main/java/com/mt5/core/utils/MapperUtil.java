@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MapperUtil {
@@ -49,6 +50,14 @@ public class MapperUtil {
         }
         history.setCandles(candles);
         return history;
+    }
+
+    public static Date convertLongToDate(long epochInSeconds){
+        return new Date(epochInSeconds*1000L);
+    }
+
+    public static String convertDateToEpochSecond(Date date){
+        return String.valueOf(date.getTime()/1000L);
     }
 
 }

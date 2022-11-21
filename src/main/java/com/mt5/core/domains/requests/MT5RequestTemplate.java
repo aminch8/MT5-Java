@@ -1,38 +1,38 @@
 package com.mt5.core.domains.requests;
 
+import com.mt5.core.enums.Action;
+import com.mt5.core.enums.ActionType;
+import com.mt5.core.enums.TimeFrame;
+import com.mt5.core.utils.MapperUtil;
 import lombok.Data;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 
 
 public class MT5RequestTemplate {
-    String action;
-    String actionType;
-    String symbol;
-    String chartTF;
-    String fromDate;
-    String toDate;
-    String id;
-    String magic;
-    String volume;
-    String price;
-    String stoploss;
-    String takeprofit;
-    String expiration;
-    String deviation;
-    String comment;
+    protected Action action;
+    protected ActionType actionType;
+    protected String symbol;
+    protected TimeFrame chartTF;
+    protected Date fromDate;
+    protected Date toDate;
+    protected String id;
+    protected String magic;
+    protected String volume;
+    protected String price;
+    protected String stoploss;
+    protected String takeprofit;
+    protected String expiration;
+    protected String deviation;
+    protected String comment;
 
 
     public String toRequestString(){
-       if (StringUtils.isEmpty(action)) action="null";
-       if (StringUtils.isEmpty(actionType)) actionType="null";
        if (StringUtils.isEmpty(symbol)) symbol="null";
-       if (StringUtils.isEmpty(chartTF)) chartTF="null";
-       if (StringUtils.isEmpty(fromDate)) fromDate="null";
-       if (StringUtils.isEmpty(toDate)) toDate="null";
        if (StringUtils.isEmpty(id)) id="null";
        if (StringUtils.isEmpty(magic)) magic="null";
        if (StringUtils.isEmpty(volume)) volume="null";
@@ -41,14 +41,14 @@ public class MT5RequestTemplate {
        if (StringUtils.isEmpty(takeprofit)) takeprofit="null";
        if (StringUtils.isEmpty(expiration)) expiration="null";
        if (StringUtils.isEmpty(deviation)) deviation="null";
-       if (StringUtils.isEmpty(comment)) comment="null";
+       if (StringUtils.isEmpty(comment)) comment="Algotrading";
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("action",action);
-        jsonObject.put("actionType",actionType);
+        jsonObject.put("action",action!=null?action.getValue():"null");
+        jsonObject.put("actionType",actionType!=null?actionType.getValue():"null");
         jsonObject.put("symbol",symbol);
-        jsonObject.put("chartTF",chartTF);
-        jsonObject.put("fromDate",fromDate);
-        jsonObject.put("toDate",toDate);
+        jsonObject.put("chartTF",chartTF!=null?chartTF.getValue():"null");
+        jsonObject.put("fromDate",fromDate!=null? MapperUtil.convertDateToEpochSecond(fromDate):"null");
+        jsonObject.put("toDate",toDate!=null? MapperUtil.convertDateToEpochSecond(toDate):"null");
         jsonObject.put("id",id);
         jsonObject.put("magic",magic);
         jsonObject.put("volume",volume);
