@@ -126,6 +126,7 @@ public class MT5Client {
         } catch (JsonProcessingException e) {
             log.error("Error parsing positions, Message : " , e);
         }
+        if (actionTradeResponse.isError()) log.error("Cancel order request returned an error." + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
 
