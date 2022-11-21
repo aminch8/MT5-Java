@@ -9,7 +9,7 @@ public class ModifyPosition extends MT5RequestTemplate {
         this.action= Action.TRADE;
         this.actionType = ActionType.POSITION_MODIFY;
         this.id=String.valueOf(id);
-        this.stoploss=stoploss.toString();
-        this.takeprofit=takeprofit.toString();
+        this.stoploss=stoploss!=null?stoploss.toString():null;
+        this.takeprofit=takeprofit!=null?takeprofit.toString():null;
     }
 }

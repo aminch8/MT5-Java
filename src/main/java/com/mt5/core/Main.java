@@ -18,16 +18,8 @@ public class Main {
 	// write your code here
         MT5Client mt5Client = new MT5Client.MT5ClientFactory(2201,2202).setHost("localhost").build();
         MT5LiveData mt5LiveData = new MT5LiveData.MT5LiveDataFactory(2203,mt5Client).build();
-        List<Position> positions = mt5Client.getOpenPositions();
-        for (Position position : positions) {
-            BigDecimal lowernumber = BigDecimal.valueOf(14000);
-            BigDecimal highernumber = BigDecimal.valueOf(17000);
-            if (position.getType()== PositionType.POSITION_TYPE_BUY){
-                mt5Client.modifyPosition(position.getId(),lowernumber,highernumber);
-            }else {
-                mt5Client.modifyPosition(position.getId(),highernumber,lowernumber);
-            }
-        }
+        mt5Client.marketBuy("BTCUSD",BigDecimal.valueOf(0.2));
+        mt5Client.marketSell("BTCUSD",BigDecimal.valueOf(0.2),BigDecimal.valueOf(16500),BigDecimal.valueOf(13000));
 
 
     }

@@ -13,6 +13,7 @@ public enum Action {
     ORDERS("ORDERS"),
     TRADE("TRADE"),
     LIVESYMBOLS("LIVESYMBOLS"),
+    ACCOUNT("ACCOUNT")
 
     ;
 

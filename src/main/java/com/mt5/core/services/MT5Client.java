@@ -169,6 +169,51 @@ public class MT5Client {
         return actionTradeResponse;
     }
 
+    public AccountDetails getAccountDetails(){
+        GetAccountDetails getAccountDetails = new GetAccountDetails();
+        String requestAsString = getAccountDetails.toRequestString();
+        String response = executeRequest(requestAsString);
+        AccountDetails accountDetails = new AccountDetails();
+        try {
+            accountDetails = MapperUtil.getObjectMapper().readValue(response,AccountDetails.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing positions, Message : " , e);
+        }
+        return accountDetails;
+    }
+
+    public ActionTradeResponse marketBuy(String symbol,Number volume,Number stoploss,Number takeprofit){
+        MarketBuyOrder marketBuyOrder = new MarketBuyOrder(symbol,volume,stoploss,takeprofit);
+        String requestAsString = marketBuyOrder.toRequestString();
+        String response = executeRequest(requestAsString);
+        ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
+        try {
+            actionTradeResponse=MapperUtil.getObjectMapper().readValue(response,ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing positions, Message : " , e);
+        }
+        if (actionTradeResponse.isError()) log.error("Market order request returned an error." + actionTradeResponse.getDescription());
+        return actionTradeResponse;
+    }
+
+    public ActionTradeResponse marketBuy(String symbol,Number volume){
+         return marketBuy(symbol,volume,null,null);
+    }
+
+    public ActionTradeResponse marketSell(String symbol,Number volume,Number stoploss,Number takeprofit){
+        MarketSellOrder marketSellOrder = new MarketSellOrder(symbol,volume,stoploss,takeprofit);
+        String requestAsString = marketSellOrder.toRequestString();
+        String response = executeRequest(requestAsString);
+        ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
+        try {
+            actionTradeResponse=MapperUtil.getObjectMapper().readValue(response,ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing positions, Message : " , e);
+        }
+        if (actionTradeResponse.isError()) log.error("Market order request returned an error." + actionTradeResponse.getDescription());
+        return actionTradeResponse;
+    }
+
 
 
 }
