@@ -12,6 +12,8 @@ public enum Action {
     POSITIONS("POSITIONS"),
     ORDERS("ORDERS"),
     TRADE("TRADE"),
+    ACTION("WATCHLIST"),
+
     ;
 
     private String value;

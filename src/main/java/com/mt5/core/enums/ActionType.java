@@ -11,6 +11,7 @@ public enum ActionType {
     DATA("DATA"),
     ORDER_CANCEL("ORDER_CANCEL"),
     POSITION_PARTIAL("POSITION_PARTIAL"),
+    POSITION_CLOSE_ID("POSITION_CLOSE_ID"),
 
 
     ;

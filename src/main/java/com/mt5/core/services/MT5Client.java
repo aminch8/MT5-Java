@@ -116,8 +116,8 @@ public class MT5Client {
         if (actionTradeResponse.isError()) log.error("Cancel order request returned an error." + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
-    public ActionTradeResponse closePartialPosition(long id,String symbolName,Number volume){
-        ClosePartialPosition closePartialPosition = new ClosePartialPosition(id,symbolName,volume);
+    public ActionTradeResponse closePartialPosition(long id,Number volume){
+        ClosePartialPosition closePartialPosition = new ClosePartialPosition(id,volume);
         String requestAsString = closePartialPosition.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
@@ -127,6 +127,20 @@ public class MT5Client {
             log.error("Error parsing positions, Message : " , e);
         }
         if (actionTradeResponse.isError()) log.error("Cancel order request returned an error." + actionTradeResponse.getDescription());
+        return actionTradeResponse;
+    }
+
+    public ActionTradeResponse closePosition(long id){
+        ClosePosition closePosition = new ClosePosition(id);
+        String requestAsString = closePosition.toRequestString();
+        String response = executeRequest(requestAsString);
+        ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
+        try {
+            actionTradeResponse = MapperUtil.getObjectMapper().readValue(response,ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing positions, Message : " , e);
+        }
+        if (actionTradeResponse.isError()) log.error("Position close request returned an error." + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
 
