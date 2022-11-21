@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.zeromq.ZMQ;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.zeromq.SocketType.PULL;
 import static org.zeromq.SocketType.REQ;
@@ -74,7 +75,7 @@ public class MT5Client {
         return pullData.recvStr();
     }
 
-    public Positions getOpenPositions(){
+    public List<Position> getOpenPositions(){
         GetPositions getPositions = new GetPositions();
         String requestAsString = getPositions.toRequestString();
         String response = executeRequest(requestAsString);
@@ -84,7 +85,7 @@ public class MT5Client {
         } catch (JsonProcessingException e) {
             log.error("Error parsing positions, Message : " , e);
         }
-        return positions;
+        return positions.getPositions();
     }
 
     public Orders getOpenOrders(){
@@ -152,6 +153,20 @@ public class MT5Client {
             log.error("Error parsing positions, Message : " , e);
         }
         return liveSymbols;
+    }
+
+    public ActionTradeResponse modifyPosition(long id,Number stoploss,Number takeprofit){
+        ModifyPosition modifyPosition = new ModifyPosition(id,stoploss,takeprofit);
+        String requestAsString = modifyPosition.toRequestString();
+        String response = executeRequest(requestAsString);
+        ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
+        try {
+            actionTradeResponse=MapperUtil.getObjectMapper().readValue(response,ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing positions, Message : " , e);
+        }
+        if (actionTradeResponse.isError()) log.error("Position modification request returned an error." + actionTradeResponse.getDescription());
+        return actionTradeResponse;
     }
 
 
