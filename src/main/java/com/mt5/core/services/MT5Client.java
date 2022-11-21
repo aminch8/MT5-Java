@@ -116,11 +116,17 @@ public class MT5Client {
         if (actionTradeResponse.isError()) log.error("Cancel order request returned an error." + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
-    public void closePartialPosition(long id,String symbolName,Number volume){
+    public ActionTradeResponse closePartialPosition(long id,String symbolName,Number volume){
         ClosePartialPosition closePartialPosition = new ClosePartialPosition(id,symbolName,volume);
         String requestAsString = closePartialPosition.toRequestString();
         String response = executeRequest(requestAsString);
-        System.out.println(response);
+        ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
+        try {
+            actionTradeResponse = MapperUtil.getObjectMapper().readValue(response,ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing positions, Message : " , e);
+        }
+        return actionTradeResponse;
     }
 
 
