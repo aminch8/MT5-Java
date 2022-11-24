@@ -21,7 +21,7 @@ public class MT5LiveData {
     private String host = "localhost";
     private MT5Client mt5Client;
 
-    private ZMQ.Context context = ZMQ.context(2);
+    private ZMQ.Context context = ZMQ.context(1);
     private final ZMQ.Socket pullLive = context.socket(PULL);
 
     private MT5LiveData(MT5LiveData.MT5LiveDataFactory mt5LiveDataFactory){
