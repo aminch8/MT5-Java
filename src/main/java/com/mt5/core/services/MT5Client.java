@@ -55,7 +55,7 @@ public class MT5Client {
 
     @SneakyThrows
     public History getHistory(String symbol, Date fromDate, Date toDate, TimeFrame timeFrame) {
-        GetHistory getHistory = new GetHistory(symbol, fromDate, toDate, timeFrame);
+        GetHistory getHistory = MT5RequestTemplate.GetHistory(symbol,fromDate,toDate,timeFrame);
 
         String requestAsString = getHistory.toRequestString();
         String response = executeRequest(requestAsString);
@@ -88,7 +88,7 @@ public class MT5Client {
 
     @SneakyThrows
     public Orders getOpenOrders() {
-        GetOpenOrders getOpenOrders = new GetOpenOrders();
+        GetOpenOrders getOpenOrders = MT5RequestTemplate.GetOpenOrders();
         String requestAsString = getOpenOrders.toRequestString();
         String response = executeRequest(requestAsString);
         Orders orders = new Orders();
@@ -98,7 +98,7 @@ public class MT5Client {
 
     @SneakyThrows
     public ActionTradeResponse closeOrder(long id) {
-        CloseOrder closeOrder = new CloseOrder(id);
+        CloseOrder closeOrder = MT5RequestTemplate.CloseOrder(id);
         String requestAsString = closeOrder.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
@@ -111,7 +111,7 @@ public class MT5Client {
 
     @SneakyThrows
     public ActionTradeResponse closePartialPosition(long id, Number volume) {
-        ClosePartialPosition closePartialPosition = new ClosePartialPosition(id, volume);
+        ClosePartialPosition closePartialPosition = MT5RequestTemplate.ClosePartialPosition(id,volume);
         String requestAsString = closePartialPosition.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
@@ -123,7 +123,7 @@ public class MT5Client {
 
     @SneakyThrows
     public ActionTradeResponse closePosition(long id) {
-        ClosePosition closePosition = new ClosePosition(id);
+        ClosePosition closePosition = MT5RequestTemplate.ClosePosition(id);
         String requestAsString = closePosition.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
@@ -135,7 +135,7 @@ public class MT5Client {
 
     @SneakyThrows
     public LiveSymbols getLiveSymbols() {
-        GetLiveSymbols getLiveSymbols = new GetLiveSymbols();
+        GetLiveSymbols getLiveSymbols = MT5RequestTemplate.GetLiveSymbols();
         String requestAsString = getLiveSymbols.toRequestString();
         String response = executeRequest(requestAsString);
         LiveSymbols liveSymbols = new LiveSymbols();
@@ -146,7 +146,7 @@ public class MT5Client {
 
     @SneakyThrows
     public ActionTradeResponse modifyPosition(long id, Number stoploss, Number takeprofit) {
-        ModifyPosition modifyPosition = new ModifyPosition(id, stoploss, takeprofit);
+        ModifyPosition modifyPosition = MT5RequestTemplate.modifyPosition(id,stoploss,takeprofit);
         String requestAsString = modifyPosition.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
@@ -158,7 +158,7 @@ public class MT5Client {
 
     @SneakyThrows
     public AccountDetails getAccountDetails() {
-        GetAccountDetails getAccountDetails = new GetAccountDetails();
+        GetAccountDetails getAccountDetails = MT5RequestTemplate.GetAccountDetails();
         String requestAsString = getAccountDetails.toRequestString();
         String response = executeRequest(requestAsString);
         AccountDetails accountDetails = new AccountDetails();
@@ -169,7 +169,7 @@ public class MT5Client {
 
     @SneakyThrows
     public ActionTradeResponse marketBuy(String symbol, Number volume, Number stoploss, Number takeprofit) {
-        MarketBuyOrder marketBuyOrder = new MarketBuyOrder(symbol, volume, stoploss, takeprofit);
+        MarketBuyOrder marketBuyOrder = MT5RequestTemplate.MarketBuyOrder(symbol,volume,stoploss,takeprofit);
         String requestAsString = marketBuyOrder.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
@@ -185,7 +185,7 @@ public class MT5Client {
 
     @SneakyThrows
     public ActionTradeResponse marketSell(String symbol, Number volume, Number stoploss, Number takeprofit) {
-        MarketSellOrder marketSellOrder = new MarketSellOrder(symbol, volume, stoploss, takeprofit);
+        MarketSellOrder marketSellOrder = MT5RequestTemplate.MarketSellOrder(symbol,volume,stoploss,takeprofit);
         String requestAsString = marketSellOrder.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
@@ -197,7 +197,7 @@ public class MT5Client {
 
     @SneakyThrows
     public ActionTradeResponse limitBuy(String symbol, Number volume, Number price, Number stoploss, Number takeprofit) {
-        LimitBuyOrder limitBuyOrder = new LimitBuyOrder(symbol, volume, price, stoploss, takeprofit);
+        LimitBuyOrder limitBuyOrder = MT5RequestTemplate.LimitBuyOrder(symbol,volume,price,stoploss,takeprofit);
         String requestAsString = limitBuyOrder.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
@@ -214,7 +214,7 @@ public class MT5Client {
 
     @SneakyThrows
     public ActionTradeResponse limitSell(String symbol, Number volume, Number price, Number stoploss, Number takeprofit) {
-        LimitSellOrder limitSellOrder = new LimitSellOrder(symbol, volume, price, stoploss, takeprofit);
+        LimitSellOrder limitSellOrder = MT5RequestTemplate.LimitSellOrder(symbol,volume,price,stoploss,takeprofit);
         String requestAsString = limitSellOrder.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
