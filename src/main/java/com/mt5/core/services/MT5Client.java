@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mt5.core.domains.*;
 import com.mt5.core.domains.requests.*;
 import com.mt5.core.enums.TimeFrame;
+import com.mt5.core.exceptions.MT5ResponseErrorException;
+import com.mt5.core.exceptions.MT5ResponseParseException;
+import com.mt5.core.exceptions.MT5SocketException;
 import com.mt5.core.utils.MapperUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +56,7 @@ public class MT5Client {
         }
     }
 
-    @SneakyThrows
+
     public History getHistory(String symbol, Date fromDate, Date toDate, TimeFrame timeFrame) {
         GetHistory getHistory = MT5RequestTemplate.GetHistory(symbol,fromDate,toDate,timeFrame);
 
@@ -66,116 +69,161 @@ public class MT5Client {
     public String executeRequest(String requestAsString) {
         boolean requestSentStatus = pushReq.send(requestAsString.getBytes());
         if (!requestSentStatus) {
-            throw new RuntimeException("Request was not sent, Socket creation failed.");
+            throw new MT5SocketException("Request was not sent, Socket creation failed.");
         }
         String requestResponse = pushReq.recvStr();
         if (!requestResponse.equalsIgnoreCase("OK")) {
-            throw new RuntimeException("Response of value OK was not received. Wrong port number.");
+            throw new MT5ResponseErrorException("Response of value OK was not received. Wrong port number.");
         }
         return pullData.recvStr();
     }
 
-    @SneakyThrows
+
     public List<Position> getOpenPositions() {
         GetPositions getPositions = MT5RequestTemplate.GetPositions();
         String requestAsString = getPositions.toRequestString();
         String response = executeRequest(requestAsString);
         Positions positions = null;
-        positions = MapperUtil.getObjectMapper().readValue(response, Positions.class);
+        try {
+            positions = MapperUtil.getObjectMapper().readValue(response, Positions.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new MT5ResponseParseException("Unable to parse response.",e);
+        }
 
         return positions.getPositions();
     }
 
-    @SneakyThrows
+
     public Orders getOpenOrders() {
         GetOpenOrders getOpenOrders = MT5RequestTemplate.GetOpenOrders();
         String requestAsString = getOpenOrders.toRequestString();
         String response = executeRequest(requestAsString);
         Orders orders = new Orders();
-        orders = MapperUtil.getObjectMapper().readValue(response, Orders.class);
+        try {
+            orders = MapperUtil.getObjectMapper().readValue(response, Orders.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new MT5ResponseParseException("Unable to parse response.",e);
+        }
         return orders;
     }
 
-    @SneakyThrows
+
     public ActionTradeResponse closeOrder(long id) {
         CloseOrder closeOrder = MT5RequestTemplate.CloseOrder(id);
         String requestAsString = closeOrder.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
-        actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        try {
+            actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new MT5ResponseParseException("Unable to parse response.",e);
+        }
 
         if (actionTradeResponse.isError())
-            log.error("Cancel order request returned an error." + actionTradeResponse.getDescription());
+            throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
 
-    @SneakyThrows
+
     public ActionTradeResponse closePartialPosition(long id, Number volume) {
         ClosePartialPosition closePartialPosition = MT5RequestTemplate.ClosePartialPosition(id,volume);
         String requestAsString = closePartialPosition.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
-        actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        try {
+            actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new MT5ResponseParseException("Unable to parse response.",e);
+        }
         if (actionTradeResponse.isError())
-            log.error("Cancel order request returned an error." + actionTradeResponse.getDescription());
+            throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
 
-    @SneakyThrows
+
     public ActionTradeResponse closePosition(long id) {
         ClosePosition closePosition = MT5RequestTemplate.ClosePosition(id);
         String requestAsString = closePosition.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
-        actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        try {
+            actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            log.error("Exception:",e);
+            throw new MT5ResponseParseException("Unable to parse response.",e);
+        }
         if (actionTradeResponse.isError())
-            log.error("Position close request returned an error." + actionTradeResponse.getDescription());
+            throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
 
-    @SneakyThrows
+
     public LiveSymbols getLiveSymbols() {
         GetLiveSymbols getLiveSymbols = MT5RequestTemplate.GetLiveSymbols();
         String requestAsString = getLiveSymbols.toRequestString();
         String response = executeRequest(requestAsString);
         LiveSymbols liveSymbols = new LiveSymbols();
-        liveSymbols = MapperUtil.getObjectMapper().readValue(response, LiveSymbols.class);
+        try {
+            liveSymbols = MapperUtil.getObjectMapper().readValue(response, LiveSymbols.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new MT5ResponseParseException("Unable to parse response.",e);
+        }
 
         return liveSymbols;
     }
 
-    @SneakyThrows
+
     public ActionTradeResponse modifyPosition(long id, Number stoploss, Number takeprofit) {
         ModifyPosition modifyPosition = MT5RequestTemplate.modifyPosition(id,stoploss,takeprofit);
         String requestAsString = modifyPosition.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
-        actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        try {
+            actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new MT5ResponseParseException("Unable to parse response.",e);
+        }
         if (actionTradeResponse.isError())
             log.error("Position modification request returned an error." + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
 
-    @SneakyThrows
+
     public AccountDetails getAccountDetails() {
         GetAccountDetails getAccountDetails = MT5RequestTemplate.GetAccountDetails();
         String requestAsString = getAccountDetails.toRequestString();
         String response = executeRequest(requestAsString);
         AccountDetails accountDetails = new AccountDetails();
-        accountDetails = MapperUtil.getObjectMapper().readValue(response, AccountDetails.class);
+        try {
+            accountDetails = MapperUtil.getObjectMapper().readValue(response, AccountDetails.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new MT5ResponseParseException("Unable to parse response.",e);
+        }
 
         return accountDetails;
     }
 
-    @SneakyThrows
+
     public ActionTradeResponse marketBuy(String symbol, Number volume, Number stoploss, Number takeprofit) {
         MarketBuyOrder marketBuyOrder = MT5RequestTemplate.MarketBuyOrder(symbol,volume,stoploss,takeprofit);
         String requestAsString = marketBuyOrder.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
-        actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        try {
+            actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new MT5ResponseParseException("Unable to parse response.",e);
+        }
         if (actionTradeResponse.isError())
-            log.error("Market order request returned an error." + actionTradeResponse.getDescription());
+            throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
 
@@ -183,27 +231,37 @@ public class MT5Client {
         return marketBuy(symbol, volume, null, null);
     }
 
-    @SneakyThrows
+
     public ActionTradeResponse marketSell(String symbol, Number volume, Number stoploss, Number takeprofit) {
         MarketSellOrder marketSellOrder = MT5RequestTemplate.MarketSellOrder(symbol,volume,stoploss,takeprofit);
         String requestAsString = marketSellOrder.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
-        actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        try {
+            actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new MT5ResponseParseException("Unable to parse response.",e);
+        }
         if (actionTradeResponse.isError())
-            log.error("Market order request returned an error." + actionTradeResponse.getDescription());
+            throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
 
-    @SneakyThrows
+
     public ActionTradeResponse limitBuy(String symbol, Number volume, Number price, Number stoploss, Number takeprofit) {
         LimitBuyOrder limitBuyOrder = MT5RequestTemplate.LimitBuyOrder(symbol,volume,price,stoploss,takeprofit);
         String requestAsString = limitBuyOrder.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
-        actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        try {
+            actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new MT5ResponseParseException("Unable to parse response.",e);
+        }
         if (actionTradeResponse.isError())
-            log.error("Limit order request returned an error." + actionTradeResponse.getDescription());
+            throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
 
@@ -212,17 +270,20 @@ public class MT5Client {
     }
 
 
-    @SneakyThrows
+
     public ActionTradeResponse limitSell(String symbol, Number volume, Number price, Number stoploss, Number takeprofit) {
         LimitSellOrder limitSellOrder = MT5RequestTemplate.LimitSellOrder(symbol,volume,price,stoploss,takeprofit);
         String requestAsString = limitSellOrder.toRequestString();
         String response = executeRequest(requestAsString);
         ActionTradeResponse actionTradeResponse = new ActionTradeResponse();
-        actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
-        if (actionTradeResponse.isError()) {
-            log.error("Limit order request returned an error." + actionTradeResponse.getDescription());
-            throw new RuntimeException();
+        try {
+            actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new MT5ResponseParseException("Unable to parse response.",e);
         }
+        if (actionTradeResponse.isError())
+            throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
         return actionTradeResponse;
     }
 
