@@ -3,7 +3,7 @@ package com.mt5.core.domains.requests;
 import com.mt5.core.enums.Action;
 import com.mt5.core.enums.ActionType;
 
-class ModifyPosition extends MT5RequestTemplate {
+public class ModifyPosition extends MT5RequestTemplate {
 
     public ModifyPosition(long id,Number stoploss,Number takeprofit) {
         this.action= Action.TRADE;

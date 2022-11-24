@@ -3,7 +3,7 @@ package com.mt5.core.domains.requests;
 import com.mt5.core.enums.Action;
 import com.mt5.core.enums.ActionType;
 
-class MarketSellOrder extends MT5RequestTemplate{
+public class MarketSellOrder extends MT5RequestTemplate{
     MarketSellOrder(String symbol, Number volume, Number stoploss, Number takeprofit) {
         this(symbol,volume);
         this.stoploss=stoploss!=null?stoploss.toString():null;

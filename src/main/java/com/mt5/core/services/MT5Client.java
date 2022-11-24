@@ -77,7 +77,7 @@ public class MT5Client {
 
     @SneakyThrows
     public List<Position> getOpenPositions() {
-        GetPositions getPositions = new GetPositions();
+        GetPositions getPositions = MT5RequestTemplate.GetPositions();
         String requestAsString = getPositions.toRequestString();
         String response = executeRequest(requestAsString);
         Positions positions = null;

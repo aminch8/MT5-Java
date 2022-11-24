@@ -3,7 +3,7 @@ package com.mt5.core.domains.requests;
 import com.mt5.core.enums.Action;
 import com.mt5.core.enums.ActionType;
 
-class LimitBuyOrder extends MT5RequestTemplate{
+public class LimitBuyOrder extends MT5RequestTemplate{
     LimitBuyOrder(String symbol,Number volume,Number price) {
         this.action= Action.TRADE;
         this.actionType= ActionType.ORDER_TYPE_BUY_LIMIT;
