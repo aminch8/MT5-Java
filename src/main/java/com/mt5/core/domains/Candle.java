@@ -14,4 +14,14 @@ public class Candle {
     private Number lowPrice;
     private Number closePrice;
     private Number volume;
+    private String symbol;
+
+    public Candle(ZonedDateTime openTime, Number openPrice, Number highPrice, Number lowPrice, Number closePrice, Number volume) {
+        this.openTime = openTime;
+        this.openPrice = openPrice;
+        this.highPrice = highPrice;
+        this.lowPrice = lowPrice;
+        this.closePrice = closePrice;
+        this.volume = volume;
+    }
 }

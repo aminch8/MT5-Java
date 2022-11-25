@@ -5,12 +5,19 @@ import com.mt5.core.domains.ActionConfigResponse;
 import com.mt5.core.domains.requests.MT5RequestTemplate;
 import com.mt5.core.domains.requests.UpdateConfig;
 import com.mt5.core.enums.TimeFrame;
+import com.mt5.core.exceptions.MT5ResponseErrorException;
+import com.mt5.core.exceptions.MT5ResponseParseException;
+import com.mt5.core.interfaces.LiveDataRunnable;
 import com.mt5.core.interfaces.OnCandleUpdate;
+import com.mt5.core.interfaces.OnConnectionFailure;
 import com.mt5.core.interfaces.OnTickUpdate;
 import com.mt5.core.services.MT5Client;
 import com.mt5.core.utils.MapperUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.zeromq.ZMQ;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.zeromq.SocketType.PULL;
 
@@ -24,17 +31,36 @@ public class MT5LiveData {
     private ZMQ.Context context = ZMQ.context(1);
     private final ZMQ.Socket pullLive = context.socket(PULL);
 
+    private ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+    private LiveDataRunnable connection;
+    private WatchDogLiveData watchDogLiveData;
+    private OnConnectionFailure onConnectionFailure;
+
+
     private MT5LiveData(MT5LiveData.MT5LiveDataFactory mt5LiveDataFactory){
         this.livePort = mt5LiveDataFactory.livePort;
         this.host = mt5LiveDataFactory.host;
         this.mt5Client = mt5LiveDataFactory.mt5Client;
+        this.onConnectionFailure = mt5LiveDataFactory.onConnectionFailure;
         pullLive.connect("tcp://"+host+":"+livePort);
+    }
+
+    void restoreConnection() {
+        executorService.shutdownNow();
+        executorService = Executors.newFixedThreadPool(2);
+        onConnectionFailure.onBeforeConnectionReset();
+        executorService.submit(watchDogLiveData);
+        executorService.submit(connection);
+        onConnectionFailure.onAfterConnectionReset();
+
     }
 
     public static class MT5LiveDataFactory {
         private int livePort;
         private String host="localhost";
         private MT5Client mt5Client;
+        private OnConnectionFailure onConnectionFailure;
 
         public MT5LiveDataFactory(int livePort, MT5Client mt5Client) {
             this.livePort = livePort;
@@ -43,6 +69,11 @@ public class MT5LiveData {
 
         public MT5LiveData.MT5LiveDataFactory setHost(String host) {
             this.host = host;
+            return this;
+        }
+
+        public MT5LiveData.MT5LiveDataFactory setOnConnectionFailure(OnConnectionFailure onConnectionFailure){
+            this.onConnectionFailure=onConnectionFailure;
             return this;
         }
 
@@ -60,9 +91,10 @@ public class MT5LiveData {
             actionConfigResponse =
                     MapperUtil.getObjectMapper().readValue(mt5Client.executeRequest(requestAsString), ActionConfigResponse.class);
         } catch (JsonProcessingException e) {
-           log.error("Response of update could not be processed",e);
+            e.printStackTrace();
+            throw new MT5ResponseParseException("Unable to parse response.",e);
         }
-        if (actionConfigResponse.isError()) log.error("Update Liva Data Failed, Message : " + actionConfigResponse.getDescription());
+        if (actionConfigResponse.isError())  throw new MT5ResponseErrorException("Error received in response. " + actionConfigResponse.getDescription());
         return actionConfigResponse;
     }
 
@@ -71,15 +103,22 @@ public class MT5LiveData {
     }
 
     public void startStream(OnCandleUpdate onCandleUpdate,OnTickUpdate onTickUpdate){
-        new Thread(new LiveDataRunnable(onCandleUpdate,onTickUpdate,this)).start();
+        connection = new LiveDataRunnableImpl(onCandleUpdate,onTickUpdate,this);
+        watchDogLiveData = new WatchDogLiveData(this,connection);
+        executorService.execute(watchDogLiveData);
+        executorService.execute(connection);
     }
 
     public void startStream(OnTickUpdate onTickUpdate){
-        new Thread(new LiveDataRunnable(onTickUpdate,this)).start();
+        connection = new LiveDataRunnableImpl(onTickUpdate,this);
+        executorService.execute(watchDogLiveData);
+        executorService.execute(connection);
     }
 
     public void startStream(OnCandleUpdate onCandleUpdate){
-        new Thread(new LiveDataRunnable(onCandleUpdate,this)).start();
+        connection = new LiveDataRunnableImpl(onCandleUpdate,this);
+        executorService.execute(watchDogLiveData);
+        executorService.execute(connection);
     }
 
 
