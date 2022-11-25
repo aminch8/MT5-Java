@@ -49,10 +49,10 @@ public class MT5LiveData {
     void restoreConnection() {
         executorService.shutdownNow();
         executorService = Executors.newFixedThreadPool(2);
-        onConnectionFailure.onBeforeConnectionReset();
+        if (onConnectionFailure!=null) onConnectionFailure.onBeforeConnectionReset();
         executorService.submit(watchDogLiveData);
         executorService.submit(connection);
-        onConnectionFailure.onAfterConnectionReset();
+        if (onConnectionFailure!=null) onConnectionFailure.onAfterConnectionReset();
 
     }
 
@@ -111,12 +111,14 @@ public class MT5LiveData {
 
     public void startStream(OnTickUpdate onTickUpdate){
         connection = new LiveDataRunnableImpl(onTickUpdate,this);
+        watchDogLiveData = new WatchDogLiveData(this,connection);
         executorService.execute(watchDogLiveData);
         executorService.execute(connection);
     }
 
     public void startStream(OnCandleUpdate onCandleUpdate){
         connection = new LiveDataRunnableImpl(onCandleUpdate,this);
+        watchDogLiveData = new WatchDogLiveData(this,connection);
         executorService.execute(watchDogLiveData);
         executorService.execute(connection);
     }
