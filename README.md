@@ -1,8 +1,10 @@
 # MT5-Java
-A Library to simplify using Meta Trader 5 through Java
+Interact with your Metatrader 5 with Java using MT5-Java.
 
+# Installation:
+To be completed....
 
-TODO:
-1) Write Unit Tests
-2) Write Documentation
-3) Publish to Maven Central
+# TODO:
+- [ ] Write Unit Tests
+- [ ] Write Documentation
+- [ ] Publish to Maven Central
