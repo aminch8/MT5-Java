@@ -21,7 +21,7 @@ import static org.zeromq.SocketType.REQ;
 public class MT5Client {
     private int systemPort = 2201;
     private int dataPort = 2202;
-    private String host = "localhost";
+    private String host;
 
     ZMQ.Context context = ZMQ.context(2);
     final ZMQ.Socket pushReq = context.socket(REQ);
@@ -38,7 +38,7 @@ public class MT5Client {
     public static class MT5ClientFactory {
         private int systemPort;
         private int dataPort;
-        private String host;
+        private String host="localhost";
 
         public MT5ClientFactory(int systemPort, int dataPort) {
             this.systemPort = systemPort;
