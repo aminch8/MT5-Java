@@ -1,4 +1,4 @@
-package com.mt5.core.services;
+package com.mt5.core.clients;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mt5.core.domains.*;
@@ -8,7 +8,6 @@ import com.mt5.core.exceptions.MT5ResponseErrorException;
 import com.mt5.core.exceptions.MT5ResponseParseException;
 import com.mt5.core.exceptions.MT5SocketException;
 import com.mt5.core.utils.MapperUtil;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.zeromq.ZMQ;
 

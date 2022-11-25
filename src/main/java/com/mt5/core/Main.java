@@ -1,16 +1,11 @@
 package com.mt5.core;
 
 
-import com.mt5.core.domains.*;
-import com.mt5.core.enums.PositionType;
-import com.mt5.core.enums.TimeFrame;
 import com.mt5.core.livedata.MT5LiveData;
-import com.mt5.core.services.MT5Client;
+import com.mt5.core.clients.MT5Client;
 
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
 
 public class Main {
 

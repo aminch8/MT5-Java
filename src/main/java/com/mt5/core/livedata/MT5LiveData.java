@@ -11,7 +11,7 @@ import com.mt5.core.interfaces.LiveDataRunnable;
 import com.mt5.core.interfaces.OnCandleUpdate;
 import com.mt5.core.interfaces.OnConnectionFailure;
 import com.mt5.core.interfaces.OnTickUpdate;
-import com.mt5.core.services.MT5Client;
+import com.mt5.core.clients.MT5Client;
 import com.mt5.core.utils.MapperUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.zeromq.ZMQ;
