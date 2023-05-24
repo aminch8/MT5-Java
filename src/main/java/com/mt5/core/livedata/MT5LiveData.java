@@ -54,7 +54,6 @@ public class MT5LiveData {
 
     @SneakyThrows
     void restoreConnection() {
-        System.out.println("restoring connection");
         executorService = Executors.newFixedThreadPool(4);
         connection = new LiveDataRunnableImpl(onCandleUpdate,onTickUpdate,this);
         watchDogLiveData = new WatchDogLiveData(this,connection);
