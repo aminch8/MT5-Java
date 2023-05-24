@@ -51,14 +51,15 @@ class LiveDataRunnableImpl implements LiveDataRunnable {
         while (true){
            try {
                String response = mt5LiveData.getLiveData();
+               System.out.println("response gotten is : "+response);
                JSONObject responseJson = new JSONObject(response);
                String status = responseJson.getString("status");
-               String symbol  = responseJson.getString("symbol");
                if (!checkStatus(status)) {
                    isRunning=false;
                    log.error("TERMINAL IS DISCONNECTED.");
                    throw new MT5SocketException("Live Data Socket Interrupted");
                }else {
+                   String symbol  = responseJson.getString("symbol");
                    isRunning=true;
                    TimeFrame timeFrame = TimeFrame.valueOf(responseJson.getString("timeframe"));
                    if (timeFrame==TimeFrame.TICK){
@@ -76,7 +77,7 @@ class LiveDataRunnableImpl implements LiveDataRunnable {
                        Number lowPrice = candle.getNumber(3);
                        Number closePrice = candle.getNumber(4);
                        Number volume = candle.getNumber(5);
-                       Candle candleObject = new Candle(openTimeZDT, openPrice,highPrice,lowPrice,closePrice,volume,symbol);
+                       Candle candleObject = new Candle(openTimeZDT, openPrice,highPrice,lowPrice,closePrice,volume,symbol,timeFrame);
                        if (this.onCandleUpdate!=null) onCandleUpdate.onCandleUpdate(candleObject);
                    }
                }

@@ -13,11 +13,14 @@ import com.mt5.core.interfaces.OnConnectionFailure;
 import com.mt5.core.interfaces.OnTickUpdate;
 import com.mt5.core.clients.MT5Client;
 import com.mt5.core.utils.MapperUtil;
+import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.zeromq.ZMQ;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.zeromq.SocketType.PULL;
 
@@ -35,7 +38,10 @@ public class MT5LiveData {
 
     private LiveDataRunnable connection;
     private WatchDogLiveData watchDogLiveData;
+    @Setter
     private OnConnectionFailure onConnectionFailure;
+    private OnCandleUpdate onCandleUpdate;
+    private OnTickUpdate onTickUpdate;
 
 
     private MT5LiveData(MT5LiveData.MT5LiveDataFactory mt5LiveDataFactory){
@@ -46,12 +52,15 @@ public class MT5LiveData {
         pullLive.connect("tcp://"+host+":"+livePort);
     }
 
+    @SneakyThrows
     void restoreConnection() {
-        executorService.shutdownNow();
-        executorService = Executors.newFixedThreadPool(2);
+        System.out.println("restoring connection");
+        executorService = Executors.newFixedThreadPool(4);
+        connection = new LiveDataRunnableImpl(onCandleUpdate,onTickUpdate,this);
+        watchDogLiveData = new WatchDogLiveData(this,connection);
         if (onConnectionFailure!=null) onConnectionFailure.onBeforeConnectionReset();
-        executorService.submit(watchDogLiveData);
         executorService.submit(connection);
+        executorService.submit(watchDogLiveData);
         if (onConnectionFailure!=null) onConnectionFailure.onAfterConnectionReset();
 
     }
@@ -103,6 +112,8 @@ public class MT5LiveData {
     }
 
     public void startStream(OnCandleUpdate onCandleUpdate,OnTickUpdate onTickUpdate){
+        this.onCandleUpdate = onCandleUpdate;
+        this.onTickUpdate=onTickUpdate;
         connection = new LiveDataRunnableImpl(onCandleUpdate,onTickUpdate,this);
         watchDogLiveData = new WatchDogLiveData(this,connection);
         executorService.execute(watchDogLiveData);
@@ -110,6 +121,7 @@ public class MT5LiveData {
     }
 
     public void startStream(OnTickUpdate onTickUpdate){
+        this.onTickUpdate=onTickUpdate;
         connection = new LiveDataRunnableImpl(onTickUpdate,this);
         watchDogLiveData = new WatchDogLiveData(this,connection);
         executorService.execute(watchDogLiveData);
@@ -117,6 +129,7 @@ public class MT5LiveData {
     }
 
     public void startStream(OnCandleUpdate onCandleUpdate){
+        this.onCandleUpdate = onCandleUpdate;
         connection = new LiveDataRunnableImpl(onCandleUpdate,this);
         watchDogLiveData = new WatchDogLiveData(this,connection);
         executorService.execute(watchDogLiveData);

@@ -2,13 +2,14 @@ package com.mt5.core.livedata;
 
 import com.mt5.core.interfaces.LiveDataRunnable;
 import com.mt5.core.interfaces.WatchDogRunnable;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Slf4j
 public class WatchDogLiveData implements WatchDogRunnable {
 
-    private final BlockingQueue<Boolean> watchdogFood = new LinkedBlockingQueue<>();
     private final AtomicBoolean isConnected = new AtomicBoolean(true);
 
     private MT5LiveData mt5LiveData;
@@ -24,18 +25,18 @@ public class WatchDogLiveData implements WatchDogRunnable {
     @Override
     public void run() {
         CheckConnectionTask checkConnectionTask = new CheckConnectionTask(liveDataRunnable);
-        Thread.currentThread().setName("Connection Watchdog Thread");
         while (true) {
-            boolean isStillRunning;
+            boolean isStillRunning = false;
             ScheduledFuture<Boolean> isStillRunningFuture = executorService.schedule(checkConnectionTask,30,TimeUnit.SECONDS);
             try {
                 isStillRunning = isStillRunningFuture.get(40,TimeUnit.SECONDS);
                 isConnected.set(isStillRunning);
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                throw new RuntimeException("UNEXPECTED EXCEPTION IN LIVE DATA WATCHDOG");
+                log.error("Error:"+e);
             }
             if (!isStillRunning){
                 mt5LiveData.restoreConnection();
+                Thread.currentThread().stop();
             }
         }
     }
