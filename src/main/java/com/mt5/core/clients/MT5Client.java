@@ -9,6 +9,7 @@ import com.mt5.core.exceptions.MT5ResponseParseException;
 import com.mt5.core.exceptions.MT5SocketException;
 import com.mt5.core.utils.MapperUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
 
 import java.util.Date;
@@ -23,7 +24,7 @@ public class MT5Client {
     private int dataPort = 2202;
     private String host;
 
-    ZMQ.Context context = ZMQ.context(2);
+    ZMQ.Context context = ZMQ.context(10);
     final ZMQ.Socket pushReq = context.socket(REQ);
     final ZMQ.Socket pullData = context.socket(PULL);
 

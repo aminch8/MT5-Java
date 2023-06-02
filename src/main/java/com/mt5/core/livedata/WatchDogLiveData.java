@@ -36,7 +36,6 @@ public class WatchDogLiveData implements WatchDogRunnable {
             }
             if (!isStillRunning){
                 mt5LiveData.restoreConnection();
-                Thread.currentThread().stop();
             }
         }
     }
