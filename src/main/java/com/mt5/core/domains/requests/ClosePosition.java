@@ -6,7 +6,7 @@ import com.mt5.core.enums.ActionType;
 public class ClosePosition extends MT5RequestTemplate{
     ClosePosition(long id) {
         this.action= Action.TRADE;
-        this.actionType= ActionType.POSITION_PARTIAL;
+        this.actionType= ActionType.POSITION_CLOSE_ID;
         this.id=String.valueOf(id);
     }
 }
