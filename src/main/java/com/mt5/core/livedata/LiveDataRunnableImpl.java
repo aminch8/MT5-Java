@@ -6,6 +6,7 @@ import com.mt5.core.enums.TimeFrame;
 import com.mt5.core.exceptions.MT5SocketException;
 import com.mt5.core.interfaces.LiveDataRunnable;
 import com.mt5.core.interfaces.OnCandleUpdate;
+import com.mt5.core.interfaces.OnConnectionFailure;
 import com.mt5.core.interfaces.OnTickUpdate;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -21,7 +22,7 @@ class LiveDataRunnableImpl implements LiveDataRunnable {
     private OnCandleUpdate onCandleUpdate;
     private OnTickUpdate onTickUpdate;
     private MT5LiveData mt5LiveData;
-    private boolean isRunning=false;
+    public boolean hasDisconnected=false;
 
     public LiveDataRunnableImpl(OnCandleUpdate onCandleUpdate, MT5LiveData mt5LiveData) {
        this(onCandleUpdate,null,mt5LiveData);
@@ -46,7 +47,7 @@ class LiveDataRunnableImpl implements LiveDataRunnable {
 
     @Override
     public void run() {
-        isRunning=true;
+        hasDisconnected=false;
         Thread.currentThread().setName("Live Data Thread");
         while (true){
            try {
@@ -55,12 +56,10 @@ class LiveDataRunnableImpl implements LiveDataRunnable {
                JSONObject responseJson = new JSONObject(response);
                String status = responseJson.getString("status");
                if (!checkStatus(status)) {
-                   isRunning=false;
+                   hasDisconnected=true;
                    log.error("TERMINAL IS DISCONNECTED.");
-                   throw new MT5SocketException("Live Data Socket Interrupted");
                }else {
                    String symbol  = responseJson.getString("symbol");
-                   isRunning=true;
                    TimeFrame timeFrame = TimeFrame.valueOf(responseJson.getString("timeframe"));
                    if (timeFrame==TimeFrame.TICK){
                        JSONArray candle = responseJson.getJSONArray("data");
@@ -82,15 +81,11 @@ class LiveDataRunnableImpl implements LiveDataRunnable {
                    }
                }
            }catch (Exception e){
-               isRunning=false;
-               throw new MT5SocketException("Live Data Socket Interrupted",e);
+               hasDisconnected=true;
+               log.error("Live Data Socket Interrupted");
            }
         }
 
     }
 
-    @Override
-    public boolean isRunning(){
-        return this.isRunning;
-    }
 }
