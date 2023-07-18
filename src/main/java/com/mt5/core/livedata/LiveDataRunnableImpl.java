@@ -52,7 +52,7 @@ class LiveDataRunnableImpl implements LiveDataRunnable {
         while (true){
            try {
                String response = mt5LiveData.getLiveData();
-               System.out.println("response gotten is : "+response);
+               log.info("response gotten is : "+response);
                JSONObject responseJson = new JSONObject(response);
                String status = responseJson.getString("status");
                if (!checkStatus(status)) {
