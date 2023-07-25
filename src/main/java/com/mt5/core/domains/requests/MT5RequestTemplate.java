@@ -94,8 +94,16 @@ public class MT5RequestTemplate {
         return new LimitBuyOrder(symbol, volume, price, stoploss, takeprofit);
     }
 
+    public static LimitBuyOrder LimitBuyOrder(String symbol, Number volume, Number price, Number stoploss, Number takeprofit,Date expiration) {
+        return new LimitBuyOrder(symbol, volume, price, stoploss, takeprofit,expiration);
+    }
+
     public static LimitSellOrder LimitSellOrder(String symbol, Number volume, Number price, Number stoploss, Number takeprofit) {
         return new LimitSellOrder(symbol, volume, price, stoploss, takeprofit);
+    }
+
+    public static LimitSellOrder LimitSellOrder(String symbol, Number volume, Number price, Number stoploss, Number takeprofit,Date expiration) {
+        return new LimitSellOrder(symbol, volume, price, stoploss, takeprofit,expiration);
     }
 
     public static MarketBuyOrder MarketBuyOrder(String symbol, Number volume, Number stoploss, Number takeprofit) {

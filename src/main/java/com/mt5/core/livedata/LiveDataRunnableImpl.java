@@ -83,6 +83,7 @@ class LiveDataRunnableImpl implements LiveDataRunnable {
            }catch (Exception e){
                hasDisconnected=true;
                log.error("Live Data Socket Interrupted");
+               e.printStackTrace();
            }
         }
 
