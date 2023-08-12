@@ -5,12 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.mt5.core.domains.Candle;
 import com.mt5.core.domains.History;
-import com.mt5.core.enums.TimeFrame;
+import com.mt5.core.enums.Mt5TimeFrame;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -35,7 +33,7 @@ public class MapperUtil {
         String symbol = responseJson.getString("symbol");
         String timeframe = responseJson.getString("timeframe");
         JSONArray data = responseJson.getJSONArray("data");
-        History history = new History(symbol, TimeFrame.valueOf(timeframe));
+        History history = new History(symbol, Mt5TimeFrame.valueOf(timeframe));
         List<Candle> candles = new ArrayList<>();
         for (int i = 0;i<data.length();i++){
             JSONArray candle = data.getJSONArray(i);

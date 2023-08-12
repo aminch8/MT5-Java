@@ -3,8 +3,7 @@ package com.mt5.core.domains.requests;
 
 import com.mt5.core.enums.Action;
 import com.mt5.core.enums.ActionType;
-import com.mt5.core.enums.TimeFrame;
-import com.mt5.core.utils.MapperUtil;
+import com.mt5.core.enums.Mt5TimeFrame;
 
 
 import java.util.Date;
@@ -12,7 +11,7 @@ import java.util.Date;
 
 public class GetHistory extends MT5RequestTemplate{
 
-    GetHistory(String symbol, Date fromDate, Date toDate, TimeFrame chartTF) {
+    GetHistory(String symbol, Date fromDate, Date toDate, Mt5TimeFrame chartTF) {
         this.action= Action.HISTORY;
         this.actionType= ActionType.DATA;
         this.symbol=symbol;

@@ -3,13 +3,12 @@ package com.mt5.core.clients;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mt5.core.domains.*;
 import com.mt5.core.domains.requests.*;
-import com.mt5.core.enums.TimeFrame;
+import com.mt5.core.enums.Mt5TimeFrame;
 import com.mt5.core.exceptions.MT5ResponseErrorException;
 import com.mt5.core.exceptions.MT5ResponseParseException;
 import com.mt5.core.exceptions.MT5SocketException;
 import com.mt5.core.utils.MapperUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
 
 import java.util.Date;
@@ -57,7 +56,7 @@ public class MT5Client {
     }
 
 
-    public History getHistory(String symbol, Date fromDate, Date toDate, TimeFrame timeFrame) {
+    public History getHistory(String symbol, Date fromDate, Date toDate, Mt5TimeFrame timeFrame) {
         GetHistory getHistory = MT5RequestTemplate.GetHistory(symbol,fromDate,toDate,timeFrame);
 
         String requestAsString = getHistory.toRequestString();
