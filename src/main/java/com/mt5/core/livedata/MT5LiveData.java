@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mt5.core.domains.ActionConfigResponse;
 import com.mt5.core.domains.requests.MT5RequestTemplate;
 import com.mt5.core.domains.requests.UpdateConfig;
-import com.mt5.core.enums.Mt5TimeFrame;
+import com.mt5.core.enums.MT5TimeFrame;
 import com.mt5.core.exceptions.MT5ResponseErrorException;
 import com.mt5.core.exceptions.MT5ResponseParseException;
 import com.mt5.core.interfaces.OnCandleUpdate;
@@ -77,7 +77,7 @@ public class MT5LiveData {
     }
 
 
-    public ActionConfigResponse addToLiveDataConfig(String symbol, Mt5TimeFrame timeFrame){
+    public ActionConfigResponse addToLiveDataConfig(String symbol, MT5TimeFrame timeFrame){
         UpdateConfig updateConfig = MT5RequestTemplate.UpdateConfig(symbol,timeFrame);
         String requestAsString = updateConfig.toRequestString();
         ActionConfigResponse actionConfigResponse = null;

@@ -2,7 +2,7 @@ package com.mt5.core.livedata;
 
 import com.mt5.core.domains.Candle;
 import com.mt5.core.domains.Tick;
-import com.mt5.core.enums.Mt5TimeFrame;
+import com.mt5.core.enums.MT5TimeFrame;
 import com.mt5.core.interfaces.LiveDataRunnable;
 import com.mt5.core.interfaces.OnCandleUpdate;
 import com.mt5.core.interfaces.OnTickUpdate;
@@ -58,8 +58,8 @@ class LiveDataRunnableImpl implements LiveDataRunnable {
                    log.error("TERMINAL IS DISCONNECTED.");
                }else {
                    String symbol  = responseJson.getString("symbol");
-                   Mt5TimeFrame timeFrame = Mt5TimeFrame.valueOf(responseJson.getString("timeframe"));
-                   if (timeFrame== Mt5TimeFrame.TICK){
+                   MT5TimeFrame timeFrame = MT5TimeFrame.valueOf(responseJson.getString("timeframe"));
+                   if (timeFrame== MT5TimeFrame.TICK){
                        JSONArray candle = responseJson.getJSONArray("data");
                        ZonedDateTime timeZdt = Instant.ofEpochSecond(candle.getLong(0)).atZone(ZoneOffset.UTC);
                        Number bid = candle.getNumber(1);

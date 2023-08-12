@@ -2,7 +2,7 @@ package com.mt5.core.domains.requests;
 
 import com.mt5.core.enums.Action;
 import com.mt5.core.enums.ActionType;
-import com.mt5.core.enums.Mt5TimeFrame;
+import com.mt5.core.enums.MT5TimeFrame;
 import com.mt5.core.utils.MapperUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -14,7 +14,7 @@ public class MT5RequestTemplate {
     protected Action action;
     protected ActionType actionType;
     protected String symbol;
-    protected Mt5TimeFrame chartTF;
+    protected MT5TimeFrame chartTF;
     protected Date fromDate;
     protected Date toDate;
     protected String id;
@@ -74,7 +74,7 @@ public class MT5RequestTemplate {
         return new GetAccountDetails();
     }
 
-    public static GetHistory GetHistory(String symbol, Date fromDate, Date toDate, Mt5TimeFrame chartTF) {
+    public static GetHistory GetHistory(String symbol, Date fromDate, Date toDate, MT5TimeFrame chartTF) {
         return new GetHistory(symbol, fromDate, toDate, chartTF);
     }
 
@@ -118,7 +118,7 @@ public class MT5RequestTemplate {
         return new ModifyPosition(id, stoploss, takeprofit);
     }
 
-    public static UpdateConfig UpdateConfig(String symbol, Mt5TimeFrame chartTF) {
+    public static UpdateConfig UpdateConfig(String symbol, MT5TimeFrame chartTF) {
         return new UpdateConfig(symbol, chartTF);
     }
 

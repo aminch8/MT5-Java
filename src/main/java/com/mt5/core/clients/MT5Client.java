@@ -3,7 +3,7 @@ package com.mt5.core.clients;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mt5.core.domains.*;
 import com.mt5.core.domains.requests.*;
-import com.mt5.core.enums.Mt5TimeFrame;
+import com.mt5.core.enums.MT5TimeFrame;
 import com.mt5.core.exceptions.MT5ResponseErrorException;
 import com.mt5.core.exceptions.MT5ResponseParseException;
 import com.mt5.core.exceptions.MT5SocketException;
@@ -56,7 +56,7 @@ public class MT5Client {
     }
 
 
-    public History getHistory(String symbol, Date fromDate, Date toDate, Mt5TimeFrame timeFrame) {
+    public History getHistory(String symbol, Date fromDate, Date toDate, MT5TimeFrame timeFrame) {
         GetHistory getHistory = MT5RequestTemplate.GetHistory(symbol,fromDate,toDate,timeFrame);
 
         String requestAsString = getHistory.toRequestString();

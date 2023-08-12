@@ -1,6 +1,6 @@
 package com.mt5.core.domains;
 
-import com.mt5.core.enums.Mt5TimeFrame;
+import com.mt5.core.enums.MT5TimeFrame;
 import lombok.*;
 
 import java.time.ZonedDateTime;
@@ -15,7 +15,7 @@ public class Candle {
     private Number closePrice;
     private Number volume;
     private String symbol;
-    private Mt5TimeFrame timeFrame;
+    private MT5TimeFrame timeFrame;
 
     public Candle(ZonedDateTime openTime, Number openPrice, Number highPrice, Number lowPrice, Number closePrice, Number volume) {
         this.openTime = openTime;
