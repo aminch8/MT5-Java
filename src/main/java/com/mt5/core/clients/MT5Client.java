@@ -68,10 +68,12 @@ public class MT5Client {
     public String executeRequest(String requestAsString) {
         boolean requestSentStatus = pushReq.send(requestAsString.getBytes());
         if (!requestSentStatus) {
+            reconnect();
             throw new MT5SocketException("Request was not sent, Socket creation failed.");
         }
         String requestResponse = pushReq.recvStr();
         if (!requestResponse.equalsIgnoreCase("OK")) {
+            reconnect();
             throw new MT5ResponseErrorException("Response of value OK was not received. Wrong port number.");
         }
         return pullData.recvStr();
@@ -87,6 +89,7 @@ public class MT5Client {
             positions = MapperUtil.getObjectMapper().readValue(response, Positions.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
 
@@ -103,6 +106,7 @@ public class MT5Client {
             orders = MapperUtil.getObjectMapper().readValue(response, Orders.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
         return orders;
@@ -118,11 +122,14 @@ public class MT5Client {
             actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
 
-        if (actionTradeResponse.isError())
+        if (actionTradeResponse.isError()){
+            reconnect();
             throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
+        }
         return actionTradeResponse;
     }
 
@@ -136,10 +143,13 @@ public class MT5Client {
             actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
-        if (actionTradeResponse.isError())
+        if (actionTradeResponse.isError()){
+            reconnect();
             throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
+        }
         return actionTradeResponse;
     }
 
@@ -153,10 +163,13 @@ public class MT5Client {
             actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
         } catch (JsonProcessingException e) {
             log.error("Exception:",e);
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
-        if (actionTradeResponse.isError())
+        if (actionTradeResponse.isError()){
+            reconnect();
             throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
+        }
         return actionTradeResponse;
     }
 
@@ -170,6 +183,7 @@ public class MT5Client {
             liveSymbols = MapperUtil.getObjectMapper().readValue(response, LiveSymbols.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
 
@@ -186,10 +200,13 @@ public class MT5Client {
             actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
-        if (actionTradeResponse.isError())
+        if (actionTradeResponse.isError()){
+            reconnect();
             log.error("Position modification request returned an error." + actionTradeResponse.getDescription());
+        }
         return actionTradeResponse;
     }
 
@@ -203,6 +220,7 @@ public class MT5Client {
             accountDetails = MapperUtil.getObjectMapper().readValue(response, AccountDetails.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
 
@@ -219,10 +237,13 @@ public class MT5Client {
             actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
-        if (actionTradeResponse.isError())
+        if (actionTradeResponse.isError()){
+            reconnect();
             throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
+        }
         return actionTradeResponse;
     }
 
@@ -240,10 +261,13 @@ public class MT5Client {
             actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
-        if (actionTradeResponse.isError())
+        if (actionTradeResponse.isError()){
+            reconnect();
             throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
+        }
         return actionTradeResponse;
     }
 
@@ -257,10 +281,13 @@ public class MT5Client {
             actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
-        if (actionTradeResponse.isError())
+        if (actionTradeResponse.isError()){
+            reconnect();
             throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
+        }
         return actionTradeResponse;
     }
 
@@ -273,10 +300,13 @@ public class MT5Client {
             actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
-        if (actionTradeResponse.isError())
+        if (actionTradeResponse.isError()){
+            reconnect();
             throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
+        }
         return actionTradeResponse;
     }
 
@@ -295,10 +325,13 @@ public class MT5Client {
             actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
-        if (actionTradeResponse.isError())
+        if (actionTradeResponse.isError()){
+            reconnect();
             throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
+        }
         return actionTradeResponse;
     }
 
@@ -311,10 +344,13 @@ public class MT5Client {
             actionTradeResponse = MapperUtil.getObjectMapper().readValue(response, ActionTradeResponse.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            reconnect();
             throw new MT5ResponseParseException("Unable to parse response.",e);
         }
-        if (actionTradeResponse.isError())
+        if (actionTradeResponse.isError()){
+            reconnect();
             throw new MT5ResponseErrorException("Error received in response. " + actionTradeResponse.getDescription());
+        }
         return actionTradeResponse;
     }
 
