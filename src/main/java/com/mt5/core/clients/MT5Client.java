@@ -322,5 +322,13 @@ public class MT5Client {
         return limitSell(symbol, volume, price, null, null);
     }
 
+    public void reconnect(){
+        pushReq.disconnect("tcp://" + host + ":" + systemPort);
+        pullData.disconnect("tcp://" + host + ":" + dataPort);
+
+        pushReq.connect("tcp://" + host + ":" + systemPort);
+        pullData.connect("tcp://" + host + ":" + dataPort);
+    }
+
 
 }
