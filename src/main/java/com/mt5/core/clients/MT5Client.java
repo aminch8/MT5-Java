@@ -24,8 +24,8 @@ public class MT5Client {
     private String host;
 
     ZMQ.Context context = ZMQ.context(10);
-    final ZMQ.Socket pushReq = context.socket(REQ);
-    final ZMQ.Socket pullData = context.socket(PULL);
+    ZMQ.Socket pushReq = context.socket(REQ);
+    ZMQ.Socket pullData = context.socket(PULL);
 
     private MT5Client(MT5ClientFactory mt5ClientFactory) {
         this.systemPort = mt5ClientFactory.systemPort;
@@ -361,7 +361,10 @@ public class MT5Client {
     public void reconnect(){
         pushReq.disconnect("tcp://" + host + ":" + systemPort);
         pullData.disconnect("tcp://" + host + ":" + dataPort);
-
+        pushReq.close();
+        pullData.close();
+        pushReq = context.socket(REQ);
+        pullData = context.socket(PULL);
         pushReq.connect("tcp://" + host + ":" + systemPort);
         pullData.connect("tcp://" + host + ":" + dataPort);
     }
