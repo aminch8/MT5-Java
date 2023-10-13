@@ -78,7 +78,9 @@ public class MT5Client {
             reconnect();
             throw new MT5ResponseErrorException("Response of value OK was not received. Wrong port number.");
         }
-        return pullData.recvStr();
+        String reseponse = pullData.recvStr();
+        log.info("Pull: Got Response : " + reseponse);
+        return reseponse;
     }
 
 
