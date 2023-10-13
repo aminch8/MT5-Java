@@ -66,12 +66,14 @@ public class MT5Client {
     }
 
     public String executeRequest(String requestAsString) {
+        log.info("Push: Sending request : " + requestAsString);
         boolean requestSentStatus = pushReq.send(requestAsString.getBytes());
         if (!requestSentStatus) {
             reconnect();
             throw new MT5SocketException("Request was not sent, Socket creation failed.");
         }
         String requestResponse = pushReq.recvStr();
+        log.info("Push: Got response : " + requestResponse);
         if (!requestResponse.equalsIgnoreCase("OK")) {
             reconnect();
             throw new MT5ResponseErrorException("Response of value OK was not received. Wrong port number.");
@@ -361,8 +363,6 @@ public class MT5Client {
     public void reconnect(){
         pushReq.disconnect("tcp://" + host + ":" + systemPort);
         pullData.disconnect("tcp://" + host + ":" + dataPort);
-        pushReq.close();
-        pullData.close();
         pushReq = context.socket(REQ);
         pullData = context.socket(PULL);
         pushReq.connect("tcp://" + host + ":" + systemPort);
