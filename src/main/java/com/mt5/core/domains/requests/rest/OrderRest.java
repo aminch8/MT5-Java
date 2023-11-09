@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 public class OrderRest {
 
-    @JsonProperty("open")
+    @JsonProperty("id")
     private long id;
 
     @JsonProperty("magic")
